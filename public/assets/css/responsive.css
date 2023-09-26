@@ -1,0 +1,109 @@
+@media (min-width: 1200px){
+
+}
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+	.variation .add-on label {
+		width: 80%;
+	}
+}
+@media only screen and (max-width: 992px) {
+	nav .navbar-nav li {
+        margin-left: initial
+    }
+    /*header section*/
+	header .menu-overlay {
+		display: block
+	}
+	header .nav-menu-desktop ul {
+		display: none
+	}
+	.desktop-nav .logo {
+		width: 100%
+	}
+	.search-overlay {
+		height: 30%
+	}
+	.search-overlay .closebtn i {
+		top: 10px;
+		right: 10px;
+		font-size: 35px
+	}
+	.overlay-content {
+		width: 100%
+	}
+	.search-overlay button {
+		height: 100%;
+		padding: 10px
+	}
+	.search-overlay input[type=text] {
+		padding: 10px
+	}
+	/*header section */
+	/* footer section*/
+	.footer .short-description-footer {
+		margin-bottom: 50px
+	}
+	.footer .short-description-footer img {
+		margin-bottom: 20px
+	}
+	.footer .short-description-footer p {
+		margin-bottom: 20px
+	}
+	.footer h4 {
+    	margin-bottom: 20px
+	}
+	/* footer section*/
+	.product-single .single-product-image .acc img {
+		width: 100px;
+	}
+	.variation .add-on label {
+		width: 80%;
+	}
+}
+@media only screen and (max-width: 768px) {
+	.hero-wrapper .image {
+		display: none;
+	}
+	.hero-wrapper .content {
+		padding: 50px 40px 50px 40px;
+	}
+	.about-section .intro-image {
+		margin: auto;
+		margin-top: 10px;
+	}
+}
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+}
+@media only screen and (max-width: 576px) {
+	/*footer*/
+	.footer .footer-links {
+		margin-bottom: 30px
+	}
+	h2 {
+		font-size: 32px;
+	}
+	.categories-section .categories-card {
+		margin-bottom: 30px;
+	}
+	.products-wrap .product-card .product-info {
+		padding: 20px 15px;
+	}
+	/*footer*/
+	.coupons-sections .coupon-card-2 {
+		margin-top: 30px;
+	}
+	.product-single .single-product-image .acc img {
+		width: 80px;
+	}
+	.variation .add-on label {
+		width: 80%;
+	}
+	.shop-archive-page .intro-wrapper img {
+		height: 110px;
+	}
+	.shop-archive-page .intro-wrapper h3 {
+		font-size: 17px;
+	}
+}
+@media only screen and (min-width: 250px) and (max-width: 480px) {
+}
