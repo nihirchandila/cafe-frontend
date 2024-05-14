@@ -2,17 +2,18 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { serverDomain } from '../credentials'
+import { useCartContext } from '../context/CartContext.js'
 
 export default function ProductSingle(props) {
     const [data, setData]= useState([])
     const [bestseller, setBestseller]= useState([])
     const [imagePreview, setImagePreview]=useState()
     const [itemCount, setItemCount] = useState(1);
-    const [price,setPrice] = useState()
+    const [price,setPrice] = useState(0)
     const [addonSelected, setAddonSelected] = useState([])
     const [sizeSelected, setSizeSelected] = useState([])
     const [itemCartStatus, setItemCartStatus] = useState(false)
-
+    const {cartCount, setCount} = useCartContext();
 
     const productId = props.id
     const getProduct = ()=>{
@@ -25,7 +26,7 @@ export default function ProductSingle(props) {
         }).then((res)=>{
             setData(res.data)
             setImagePreview(res.data[0].featuredImage[0])
-            setPrice(res.data[0].price)
+            setPrice(res.data[0].salePrice?res.data[0].salePrice: res.data[0].price)
         }).catch((err)=>{
             console.log(err)
         })
@@ -127,7 +128,7 @@ export default function ProductSingle(props) {
                 addonPrice += number
             })
         }
-        const totalProductPrice = sizePrice+addonPrice
+        const totalProductPrice = sizePrice+addonPrice+itemPrice
         const data = {
             productId: productId,
             sizeData : sizeSelected,
@@ -147,6 +148,8 @@ export default function ProductSingle(props) {
         // console.log(newData);
         localStorage.setItem("cartItem", JSON.stringify(newData));
         setItemCartStatus(true)
+        setCount(newData.length)
+
     }
 
   return (
@@ -258,7 +261,7 @@ export default function ProductSingle(props) {
                                                             <div className="add-on" key={index}>
                                                                 <input className="form-check-input addon-check" type="checkbox" onChange={handleProductAddon} value={item.name} price={item.price} id="20Off"/>
                                                                 <label className="form-check-label" htmlFor="20Off">
-                                                                <span className="add-on-name">{item.name}</span><span>{item.price}</span>
+                                                                <span className="add-on-name">{item.name}</span><span>₹{item.price}</span>
                                                                 </label>
                                                             </div>
                                                             )

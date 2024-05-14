@@ -66,12 +66,13 @@ useEffect(()=>{
     if(data.length>0){
       return(
         data.map((item, index)=>{
+          const url = `http://localhost:3001/images/uploads/products/${item.featuredImage}`
           return(
             <div key={index} className="col-lg-4 col-md-6 col-sm-6 product-card-wrap">
               <div className="product-card">
                 <div className="image">
                   <Link to={`/product/:${item._id}`}>
-                    <img src={`http://localhost:3001/images/uploads/products/${item.featuredImage}`} alt="product-image" />
+                    <div class="image-wrap" style={{background: `url(${url})` }}></div>
                   </Link>
                   {item.salePrice?(
                     <span className="sale-icon">{Math.round(((item.price-item.salePrice)/item.price)*100)+"%"}</span>
@@ -88,7 +89,7 @@ useEffect(()=>{
                       <span>{item.name}</span>
                     </Link>
                   </div>
-                  <p>{item.description}</p>
+                  <p>{item.about}</p>
                   <div className="product-bottom d-flex justify-content-between align-items-center">
                     <div className="sale">
                       {

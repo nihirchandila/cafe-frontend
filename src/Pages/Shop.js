@@ -23,7 +23,7 @@ export default function Shop(props) {
                     <div className="shop-page-intro">
                       <div className="intro-wrapper">
                         <img src="/assets/images/delivery-person.png" alt="deivery-guy" /> 
-                        <h3>We deliver the tase to you on your doorstep and belive
+                        <h3>We deliver the taste to you on your doorstep and belive
                           in providing best services</h3>
                       </div>
                     </div>

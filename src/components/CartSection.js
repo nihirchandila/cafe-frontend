@@ -1,9 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { serverDomain } from '../credentials';
+import { serverDomain, siteDomain } from '../credentials';
 import { Link } from 'react-router-dom';
+import { useCartContext } from '../context/CartContext.js';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 export default function CartSection() {
+    const navigate = useNavigate()
     const [productData, setProductsData] = useState([]);
     const [localData, setLocalData] = useState([]);
     const [totalPrice, setTotalPrice]=useState(0)
@@ -14,32 +18,66 @@ export default function CartSection() {
     const [discountAmount, setDisAmount] = useState(0)
     const [couponMessage, setCouponMessage] = useState({message: "", status: ""})
     const [subTotal, setSubTotal] = useState(0)
+    const {setCount} = useCartContext();
+    const [authentication, setAuthentication] = useState(false);
+    const [couponActive, setCouponActive] = useState({coupon: false})
 
     const getproductData = ()=>{
         const localStorageData = localStorage.getItem("cartItem");
-        const parsedData = JSON.parse(localStorageData);
-        setLocalData(parsedData)
-        const productIds = [];
-        let totalAmount = 0
-        parsedData.map((item)=>{
-            productIds.push(item.productId);
-            totalAmount+=item.totalPrice
-        });
-        setTotalPrice(totalAmount)
-        setSubTotal(totalAmount+delivery-discountAmount)
-        // console.log(productIds)
+        if(localStorageData){
+            const parsedData = JSON.parse(localStorageData);
+            setLocalData(parsedData)
+            const productIds = [];
+            let totalAmount = 0
+            parsedData.map((item)=>{
+                productIds.push(item.productId);
+                totalAmount+=item.totalPrice
+            });
+            setTotalPrice(totalAmount)
+            setSubTotal(totalAmount+delivery-discountAmount)
+            // console.log(productIds)
+            axios({
+                url: "http://localhost:3001/product/cartItem/",
+                method: "post",
+                data: productIds
+            }).then((res)=>{
+                setProductsData(res.data)
+            }).catch((err)=>{
+                console.log(err)
+            })
+        }
+    }
+
+    const auth = ()=>{
         axios({
-            url: "http://localhost:3001/product/cartItem/",
-            method: "post",
-            data: productIds
+          url: "http://localhost:3001/user/user-auth/",
+          method:"post",
+          data: {
+            token: Cookies.get("userToken")
+          }
         }).then((res)=>{
-            setProductsData(res.data)
+          if(res.data.status==200){
+            setAuthentication(true)
+            console.log("auth sucess")
+          }else if(res.data.status==400){
+            setAuthentication(false)
+            console.log("auth failed")
+          }else{
+            setAuthentication(false)
+                        console.log("auth failed")
+
+          }
         }).catch((err)=>{
-            console.log(err)
+          if(err){
+            setAuthentication(false)
+            console.log("auth failed")
+          }
         })
     }
     useEffect(()=>{
+        
         getproductData()
+        auth()
     },[])
 
     const remove = (index)=>{
@@ -48,6 +86,7 @@ export default function CartSection() {
         parsedData.splice(index, 1);
         localStorage.setItem("cartItem", JSON.stringify(parsedData));
         setLocalData(parsedData);
+        setCount(parsedData.length)
         getproductData();
     }
     const applyCoupon = ()=>{
@@ -62,7 +101,15 @@ export default function CartSection() {
                     setCouponMessage({message: res.data[0].off+"% OFF Coupon Applied", status: "valid"})
                     setDiscount(true)
                     setDisAmount(res.data[0].off/100*totalPrice)
-                    setSubTotal(totalPrice+delivery-res.data[0].off/100*totalPrice)//why have to write like this and not only the state name
+                    setSubTotal(totalPrice+delivery-res.data[0].off/100*totalPrice)//why have to write like this and not only the state name Answer = use a variable instead of state and update the variable in every state like this const discountAmount = res.data[0].off / 100 * totalPrice;
+
+                    const couponDetails = {
+                        coupon : true,
+                        couponName: res.data[0].name,
+                        couponDiscount: res.data[0].off,
+                        discount: res.data[0].off/100*totalPrice
+                    }
+                    setCouponActive(couponDetails)
                 }else{
                     setDisAmount(0)
                     setCouponMessage({message:"Invalid Coupon", status: "invalid"})
@@ -77,6 +124,20 @@ export default function CartSection() {
             setCouponMessage({message:"Invalid Coupon", status: "invalid"})
             setDiscount(false)
             setSubTotal(totalPrice+delivery-0)
+        }
+    }
+    const checkout = ()=>{
+        if(productData.length>0){
+        const orderDetails = {
+            delivery: delivery,
+            productsTotal: totalPrice,
+            subTotal: subTotal
+        }
+        const orderData = {...orderDetails, ...couponActive}
+        localStorage.setItem("amountDetails", JSON.stringify(orderData))
+        navigate('/checkout');
+        }else{
+            alert('Please add some product to cart')
         }
     }
 
@@ -94,6 +155,7 @@ export default function CartSection() {
                         <div className='row'>
 
                             {
+                            productData.length>0?(
                             productData.map((item,index)=>{
                                 let prId = item._id
                                 return(
@@ -104,6 +166,7 @@ export default function CartSection() {
                                         <div className="cart-pr-details">
                                             <h2>{item.name}</h2>
                                             <span>{item.categoryId.name}</span>
+                                            <h6>Price: ₹{item.salePrice?item.salePrice:item.price}</h6>
                                         </div>
                                     </div>
                                     {
@@ -152,6 +215,7 @@ export default function CartSection() {
                             </div>
                                 )
                             })
+                            ):(<h2>No Items in Cart</h2>)
                             }
                             
                         </div>
@@ -168,26 +232,28 @@ export default function CartSection() {
 
                                 </div>
                             </div>
-                            <div className="price-detail-wrap">
-                                <div className="price-detail d-flex justify-content-between">
-                                    <span> Total Amount:  </span>
-                                    <span>₹{totalPrice}</span>
-                                </div>
-                               {discount?( <div className="price-detail d-flex justify-content-between">
-                                    <span> Discount </span>
-                                    <span className="discount">-₹{discountAmount.toFixed(0)}</span>
-                                </div>):(<div></div>)}
-                                <div className="price-detail d-flex justify-content-between">
-                                    <span> Delivery:  </span>
-                                    <span>₹{delivery}</span>
-                                </div>
-                                <div className="price-detail total-price d-flex justify-content-between">
-                                    <span> Sub Total Amount </span>
-                                    <span className="total">₹{subTotal.toFixed(0)}</span>
-                                </div>
-                                <button className="btn btn-primary order-now">Checkout</button>
-                                <button className="btn btn-primary bts remove">BACK TO SHOP</button>
-                            </div>
+                           {productData.length>0?(
+                             <div className="price-detail-wrap">
+                             <div className="price-detail d-flex justify-content-between">
+                                 <span> Total Amount:  </span>
+                                 <span>₹{totalPrice}</span>
+                             </div>
+                            {discount?( <div className="price-detail d-flex justify-content-between">
+                                 <span> Discount </span>
+                                 <span className="discount">-₹{discountAmount.toFixed(0)}</span>
+                             </div>):(<div></div>)}
+                             <div className="price-detail d-flex justify-content-between">
+                                 <span> Delivery:  </span>
+                                 <span>₹{delivery}</span>
+                             </div>
+                             <div className="price-detail total-price d-flex justify-content-between">
+                                 <span> Sub Total Amount </span>
+                                 <span className="total">₹{subTotal.toFixed(0)}</span>
+                             </div>
+                             {authentication?(<button onClick={checkout} className="btn btn-primary order-now">Checkout</button>):(<Link to="/login"><button className="btn btn-primary order-now">Login/Signup</button></Link>)}
+                             <Link to={siteDomain+"/shop"}><button className="btn btn-primary bts remove">BACK TO SHOP</button></Link>
+                         </div>
+                           ):(<div></div>)}
                         </div>
                     </div>
                 </div>

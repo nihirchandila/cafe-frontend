@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { serverDomain } from '../credentials.js';
 import axios from 'axios';
 
@@ -36,31 +36,51 @@ if(searchQuery!=""){
     if(data.length>0){
       return(
         data.map((item, index)=>{
+          const url = `http://localhost:3001/images/uploads/products/${item.featuredImage}`
+
           return(
-            <div className="col-lg-4 col-md-6 col-sm-6 product-card-wrap">
-              <div className="product-card">
-                <div className="image">
-                  <img src="images/products-image_03.png" alt="product-image" />
-                  <span className="sale-icon">15% OFF</span>
-                </div>
-                <div className="product-info">
-                  <div className="product-name d-flex">
-                    <div className="veg-status">
-                      <img src="images/veg.png" alt="veg icon" />
-                    </div>
+            <div key={index} className="col-lg-4 col-md-6 col-sm-6 product-card-wrap">
+            <div className="product-card">
+              <div className="image">
+                <Link to={`/product/:${item._id}`}>
+                  <div class="image-wrap" style={{background: `url(${url})` }}></div>
+                </Link>
+                {item.salePrice?(
+                  <span className="sale-icon">{Math.round(((item.price-item.salePrice)/item.price)*100)+"%"}</span>
+                ): (<div></div>)}
+              </div>
+              <div className="product-info">
+                <div className="product-name d-flex">
+                  <div className="veg-status">
+                    {item.veg==true?(
+                       <img src="./images/veg.png" alt="veg icon" />
+                    ): ( <img src="./assets/images/non-veg.png" alt="veg icon" />)}
+                  </div>
+                  <Link to={`/product/:${item._id}`}>
                     <span>{item.name}</span>
+                  </Link>
+                </div>
+                <p>{item.about}</p>
+                <div className="product-bottom d-flex justify-content-between align-items-center">
+                  <div className="sale">
+                    {
+                      item.salePrice?(
+                        <>
+                        <span className="line-through">₹{item.price}</span>
+                        <span className="sale-amount">₹{item.salePrice}</span>
+                        </>
+                        ): (
+                          <span className="sale-amount">₹{item.price}</span>
+                        )
+                    }
                   </div>
-                  <p>Pancake with fully added cheese and coverd with pizza</p>
-                  <div className="product-bottom d-flex justify-content-between align-items-center">
-                    <div className="sale">
-                      <span className="line-through">{item.price}</span>
-                      <span className="sale-amount">₹499</span>
-                    </div>
-                    <button className="btn btn-primary order-now">Order Now</button>
-                  </div>
+                  <Link to={`/product/:${item._id}`}>
+                    <button className="btn btn-primary order-now">View Item</button>
+                  </Link>
                 </div>
               </div>
             </div>
+          </div>
           )
         })
       )

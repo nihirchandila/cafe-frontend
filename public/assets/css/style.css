@@ -316,6 +316,15 @@ nav .navbar-nav li .active {
 .products-wrap .product-card .image {
     position: relative;
 }
+.products-wrap .product-card .image-wrap {
+    background-repeat: no-repeat!important;
+    background-position : center center!important;
+    height: 200px;
+    width: auto;
+    background-size: cover!important;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
 .products-wrap .product-card .image img {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -970,4 +979,72 @@ nav .navbar-nav li .active {
     border-radius: 50%;
     padding: 0px 4px;
     line-height: normal
+  }
+.errors {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 0!important;
+}
+
+
+.order-confirmation {
+    text-align: center;
+    padding: 40px 0;
+    background: #EBF0F5;
+  }
+   .order-confirmation  h1 {
+      color: #88B04B;
+      font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+      font-weight: 900;
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    .order-confirmation p {
+      color: #404F5E;
+      font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+      font-size:20px;
+      margin: 0;
+    }
+  .order-confirmation i {
+    color: #9ABC66;
+    font-size: 100px;
+    line-height: 200px;
+    margin-left:-15px;
+  }
+  .order-confirmation .card {
+    background: white;
+    padding: 60px;
+    border-radius: 4px;
+    box-shadow: 0 2px 3px #C8D0D8;
+    display: inline-block;
+    margin: 0 auto;
+  }
+  .dashboard .nav {
+    background-color: #c73d2a;
+    color: #fff;
+    padding: 8px 8px;
+    margin-bottom: 6px;
+    text-align: center;
+    justify-content: center;
+    cursor: default;
+    transition: all .3s ease-in-out;
+
+  }
+  .dashboard .nav:hover {
+    background-color: #b93726;
+  }
+  .dashboard .nav-active {
+    background-color: #ab3323;
+  }
+  .dashboard .border-dash {
+    border: 1px solid #eeeeee;
+    border-radius: 4px;
+    padding: 15px 15    px;
+  }
+  .dashboard .dash-sidebar {
+    border-right: 1px solid #eee;
+  }
+  .dashboard .dash-item span {
+    font-weight: 600;
+    margin-right: 10px;
   }

@@ -23,8 +23,10 @@ export default function Login() {
       if(res.data.status===200){
         const token = res.data.token
         const userName = res.data.name
+        const userId = res.data.userId
         Cookies.set("userToken", token, {expires: 60*60*24})
         Cookies.set("userName", userName, {expires: 60*60*24})
+        Cookies.set("userId", userId, {expires: 60*60*24})
         navigate("/")
       }else if(res.data.status==400){
         setMessage(res.data.message)

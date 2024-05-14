@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { serverDomain, categoriesPath } from '../credentials.js';
+import { Link } from 'react-router-dom';
+import { serverDomain, categoriesPath, siteDomain } from '../credentials.js';
 
 export default function Categories() {
   const [data, setData]= useState([]);
@@ -29,7 +30,10 @@ export default function Categories() {
     data.map((item, index)=>{
       return(
         <div key={index} className="col-lg-3 col-md-4 col-sm-6 col-6 categories-card">
+          <Link to={siteDomain+"/shop"+"/category/:"+item._id}>
           <img src={categoriesPath+"/"+item.image} alt={item.name}/>
+          </Link>
+
         </div>
       )
     })

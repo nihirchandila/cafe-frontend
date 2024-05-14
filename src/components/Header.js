@@ -2,20 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import { useCartContext } from '../context/CartContext.js'
 
-
+ 
 
 export default function Header() {
+  const {cartCount} = useCartContext();
   const [authentication, setAuthentication] = useState(false);
-  const [cartCount, setCartCount] = useState(0)
-  
-  useEffect(()=>{
-    const localData = localStorage.getItem("cartItem");
-    if(localData){
-      const parsedData = JSON.parse(localData);
-      setCartCount(parsedData.length)
-    }
-  }) 
 
   const toggleMenu = ()=>{
     document.getElementById("nav-menu-mobile").classList.toggle("menu-display")
@@ -81,7 +74,9 @@ export default function Header() {
 
           </div>
           <div className="logo">
-            <img src={process.env.PUBLIC_URL+"/assets/images/logo_black.png"} alt="logo"/>
+            <Link to="/">
+              <img src={process.env.PUBLIC_URL+"/assets/images/logo_black.png"} alt="logo"/>
+            </Link>
           </div>
           <div className="nav-menu-desktop">
             <ul>
@@ -98,7 +93,7 @@ export default function Header() {
                   </li>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <div className="welcome-msg">Welcome! {Cookies.get("userName")}</div>
-                    <a className="dropdown-item" href="#">Dashboard</a>
+                    <Link className="dropdown-item" to="/dashboard/profile">Dashboard</Link>
                     <a className="dropdown-item" href="#">Orders</a>
                     <a className="dropdown-item logout-btn" href="#">Logout</a>
 
