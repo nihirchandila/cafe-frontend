@@ -10,4 +10,4 @@ after ----admin
 admin----
 
 
-section to select from list of products and show output like bestseelers
+section to select from list of products and show output like bestsellers
